@@ -64,7 +64,7 @@ def main():
                 command = parsed_procfile[command[0]]
 
     # add extra bin dir(s) to the PATH
-    extra_bin_dirs = [
+    extra_bin_dirs = [os.getcwd()] + [
         os.path.expanduser(path) for path in env.get("BIN_DIRS", "env/bin").split(",")
     ]
     env["PATH"] = ":".join(extra_bin_dirs) + ":" + env.get("PATH", "")
