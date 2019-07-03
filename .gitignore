@@ -1,0 +1,21 @@
+# Misc
+.DS_Store
+/tmp/*
+
+# Vim tmp files
+.*.swp
+
+# Byte-compiled / optimized / DLL files
+__pycache__/*
+
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+/env/*
+/build/*
+crab.spec
+/dist/*
+
+# Env file
+.env
