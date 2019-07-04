@@ -69,10 +69,12 @@ def main():
     ]
     env["PATH"] = ":".join(extra_bin_dirs) + ":" + env.get("PATH", "")
 
-    # provide a port in the environment and command line
-    port = get_free_port()
-    env["PORT"] = port
-    command = [item.replace("$PORT", port).replace("PORT", port) for item in command]
+    # Only expose a port in some circumstances. This reduces the chances of 2 processes being resolved to the same hostname by the router
+    if command[0] == 'web' or "PORT" in " ".join(command) or os.environ.get("CRAB_PROVIDE_PORT"):
+        # provide a port in the environment and command line
+        port = get_free_port()
+        env["PORT"] = port
+        command = [item.replace("$PORT", port).replace("PORT", port) for item in command]
 
     # off we go
     os.execvpe(command[0], command, env)
