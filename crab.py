@@ -72,7 +72,7 @@ def main():
     # provide a port in the environment and command line
     port = get_free_port()
     env["PORT"] = port
-    command = [item.replace("$PORT", port).replace("PORT", port) for item in command]
+    command = [item.replace("$PORT", port) for item in command]
 
     # off we go
     os.execvpe(command[0], command, env)
