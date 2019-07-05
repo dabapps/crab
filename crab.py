@@ -73,7 +73,7 @@ def main():
     # or if the command asks for one, or if explicitly specified.
     if (
         command[0] == "web"
-        or "PORT" in " ".join(command)
+        or "$PORT" in " ".join(command)
         or "CRAB_PROVIDE_PORT" in os.environ
     ):
         # provide a port in the environment and command line
