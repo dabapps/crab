@@ -73,15 +73,13 @@ def main():
     # or if the command asks for one, or if explicitly specified.
     if (
         command[0] == "web"
-        or "PORT" in " ".join(command)
+        or "$PORT" in " ".join(command)
         or "CRAB_PROVIDE_PORT" in os.environ
     ):
         # provide a port in the environment and command line
         port = get_free_port()
         env["PORT"] = port
-        command = [
-            item.replace("$PORT", port).replace("PORT", port) for item in command
-        ]
+        command = [item.replace("$PORT", port) for item in command]
 
     # off we go
     os.execvpe(command[0], command, env)
