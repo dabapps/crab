@@ -65,10 +65,10 @@ By default, the path `env/bin/` (relative to the current directory) is prepended
 
 Many developers work on multiple projects and/or multiple services at the same time. When each requires its own web server, each server process requires a different port to bind to. For example, Django's `manage.py runserver` binds to port 8000 by default. If you're working on two Django projects simulateously, you will have to run the second on a different port, say `manage.py runserver 0.0.0.0:8001`. Once you're developing on five or ten microservices, this can become very difficult to manage.
 
-Crab helps by providing every process it runs with a free port that it can bind to. This is provided in the process environment (as `$PORT`) as well as substituted into the command (for procfiles, use `$PORT`. For literal commands, just use `PORT` as the shell would otherwise try to substitute `$PORT`, which won't work). For example:
+Crab helps by providing a free port to processes that need one. The port is provided in the environment (as `$PORT`) as well as substituted into the command. For example:
 
 ```
-crab python manage.py 0.0.0.0:PORT
+crab python manage.py '0.0.0.0:$PORT'
 ```
 
 You'll see Django's development server start up with (say):
@@ -78,6 +78,11 @@ Django version 2.2, using settings 'project.settings'
 Starting development server at http://0.0.0.0:63601/
 Quit the server with CONTROL-C.
 ```
+
+A port is provided to any command with the name "`web`" in a Procfile, or any command containing the string "`$PORT`". In other circumstances, it can be explicitly requested by setting the environment variable `CRAB_PROVIDE_PORT`.
+
+(Note that for non-procfile commands, the variable must be quoted, or else the shell will try to substitute `$PORT`, which won't work).
+
 
 ## Virtual host routing
 
