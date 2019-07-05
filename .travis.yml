@@ -1,0 +1,14 @@
+language: python
+dist: xenial
+
+python: 3.7.3
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+
+install:
+  - pip install -r dev-requirements.txt
+
+script:
+  - black --check crab.py router.py
