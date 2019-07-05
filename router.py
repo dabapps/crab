@@ -1,9 +1,8 @@
-from flask import Flask, Response, request, abort
 from urllib.parse import urlparse
-from werkzeug.routing import Rule
 import os
 import psutil
-import requests
+import asyncio
+from aiohttp import web, ClientSession
 
 
 def get_routes():
@@ -18,50 +17,52 @@ def get_routes():
     return routes
 
 
-app = Flask(__name__, static_folder=None)
-app.url_map.add(Rule("/", endpoint="proxy", defaults={"path": ""}))
-app.url_map.add(Rule("/<path:path>", endpoint="proxy"))
-
-
-@app.endpoint("proxy")
-def proxy(path):
+async def handle(original_request):
     routes = get_routes()
-    hostname = urlparse(request.base_url).hostname
+    hostname = urlparse(str(original_request.url)).hostname
     if hostname not in routes:
-        app.logger.warn(f"No backend for {hostname}")
-        abort(404)
+        print(f"No backend for {hostname}")
+        return web.Response(status=404)
+    target_url = f"http://localhost:{routes[hostname]}{original_request.path_qs}"
+    print(f"Routing to {target_url}")
+    async with ClientSession() as session:
+        async with session.request(
+            original_request.method,
+            target_url,
+            data=original_request.content,
+            headers=original_request.headers,
+        ) as response:
+            proxied_response = web.Response(
+                headers=response.headers, status=response.status
+            )
+            if response.headers.get("Transfer-Encoding", "").lower() == "chunked":
+                proxied_response.enable_chunked_encoding()
 
-    path = request.full_path if request.args else request.path
-    target_url = f"http://localhost:{routes[hostname]}{path}"
-    app.logger.info(f"Routing request to backend for {hostname}{path}")
+            await proxied_response.prepare(original_request)
+            try:
+                async for data in response.content.iter_any():
+                    await proxied_response.write(data)
+            except ConnectionResetError:
+                pass
 
-    downstream_response = requests.request(
-        method=request.method,
-        url=target_url,
-        headers=request.headers,
-        data=request.data,
-    )
-    return Response(
-        response=downstream_response.content,
-        status=downstream_response.status_code,
-        headers=downstream_response.headers.items(),
-    )
+        return proxied_response
 
 
-def start_on_port(port):
-    app.run(
-        port=port, debug=True, use_debugger=False, use_reloader=False, load_dotenv=False
-    )
+async def start_on_port(port):
+    loop = asyncio.get_event_loop()
+    server = await loop.create_server(web.Server(handle), "0.0.0.0", port)
+    print(f"Router listening on port {port}.")
+    await server.serve_forever()
 
 
 def run():
     if "CRAB_ROUTER_PORT" in os.environ:
-        start_on_port(int(os.environ["CRAB_ROUTER_PORT"]))
+        asyncio.run(start_on_port(int(os.environ["CRAB_ROUTER_PORT"])))
     else:
         try:
-            start_on_port(80)
+            asyncio.run(start_on_port(80))
         except:
-            start_on_port(8080)
+            asyncio.run(start_on_port(8080))
 
 
 if __name__ == "__main__":
