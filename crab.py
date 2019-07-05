@@ -69,7 +69,8 @@ def main():
     ]
     env["PATH"] = ":".join(extra_bin_dirs) + ":" + env.get("PATH", "")
 
-    # Only expose a port in some circumstances. This reduces the chances of 2 processes being resolved to the same hostname by the router
+    # Provide a port to bind to if the process in a procfile app is called "web",
+    # or if the command asks for one, or if explicitly specified.
     if (
         command[0] == "web"
         or "PORT" in " ".join(command)
