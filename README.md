@@ -1,5 +1,6 @@
 # Crab 🦀
 
+`crab` is a simple unix toolkit for working with local development environments.
 
 ## What does it do?
 
