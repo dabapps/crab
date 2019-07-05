@@ -81,7 +81,7 @@ Quit the server with CONTROL-C.
 
 A port is provided to any command with the name "`web`" in a Procfile, or any command containing the string "`$PORT`". In other circumstances, it can be explicitly requested by setting the environment variable `CRAB_PROVIDE_PORT`.
 
-(Note that for non-procfile commands, the command must be quoted, or else the shell will try to substitute `$PORT`, which won't work).
+(Note that for non-procfile commands, the variable must be quoted, or else the shell will try to substitute `$PORT`, which won't work).
 
 
 ## Virtual host routing
