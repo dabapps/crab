@@ -68,7 +68,7 @@ Many developers work on multiple projects and/or multiple services at the same t
 Crab helps by providing a free port to processes that need one. The port is provided in the environment (as `$PORT`) as well as substituted into the command. For example:
 
 ```
-crab python 'manage.py 0.0.0.0:$PORT'
+crab python manage.py '0.0.0.0:$PORT'
 ```
 
 You'll see Django's development server start up with (say):
