@@ -59,7 +59,7 @@ Tools that are designed to isolate per-project dependency environments often wor
 
 Crab can add the path to this virtualenv onto the front of the `$PATH` environment variable. This means that you do not need to "activate" the virtualenv before using it - simply running `crab python manage.py runserver` will automatically use the `python` binary inside the virtualenv.
 
-By default, the path `env/bin/` (relative to the current directory) is prepended to `$PATH`. You can override this by setting the `BIN_DIRS` environment variable, which can be a comma-separated list of paths.
+By default, the path `env/bin` is prepended to `$PATH`. You can override this by setting the `BIN_DIRS` environment variable.
 
 ## Ports
 

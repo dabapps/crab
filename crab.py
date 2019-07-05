@@ -64,10 +64,8 @@ def main():
                 command = parsed_procfile[command[0]]
 
     # add extra bin dir(s) to the PATH
-    extra_bin_dirs = [os.getcwd()] + [
-        os.path.expanduser(path) for path in env.get("BIN_DIRS", "env/bin").split(",")
-    ]
-    env["PATH"] = ":".join(extra_bin_dirs) + ":" + env.get("PATH", "")
+    extra_bin_dirs = env.get("BIN_DIRS", "env/bin")
+    env["PATH"] = f"{os.getcwd()}:{extra_bin_dirs}:{env.get('PATH', '')}"
 
     # Provide a port to bind to if the process in a procfile app is called "web",
     # or if the command asks for one, or if explicitly specified.
