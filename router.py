@@ -39,7 +39,8 @@ def proxy(path):
         method=request.method,
         url=target_url,
         headers=request.headers,
-        data=request.data,
+        data=request.get_data(),
+        allow_redirects=False,
     )
     return Response(
         response=downstream_response.content,
