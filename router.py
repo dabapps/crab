@@ -31,6 +31,7 @@ async def handle(original_request):
             target_url,
             data=original_request.content,
             headers=original_request.headers,
+            allow_redirects=False
         ) as response:
             proxied_response = web.Response(
                 headers=response.headers, status=response.status
