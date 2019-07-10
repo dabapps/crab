@@ -33,18 +33,19 @@ def proxy(path):
 
     path = request.full_path if request.args else request.path
     target_url = f"http://localhost:{routes[hostname]}{path}"
-    app.logger.info(f"Routing request to backend for {hostname}{path}")
+    app.logger.info(f"Routing request to backend - {request.method} {hostname}{path}")
 
     downstream_response = requests.request(
         method=request.method,
         url=target_url,
         headers=request.headers,
-        data=request.data,
+        data=request.get_data(),
+        allow_redirects=False,
     )
     return Response(
         response=downstream_response.content,
         status=downstream_response.status_code,
-        headers=downstream_response.headers.items(),
+        headers=downstream_response.raw.headers.items(),
     )
 
 
