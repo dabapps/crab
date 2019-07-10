@@ -25,7 +25,7 @@ async def handle(original_request):
         return web.Response(status=404)
     target_url = f"http://localhost:{routes[hostname]}{original_request.path_qs}"
     print(f"Routing to {target_url}")
-    async with ClientSession() as session:
+    async with ClientSession(auto_decompress=False) as session:
         async with session.request(
             original_request.method,
             target_url,
@@ -33,20 +33,15 @@ async def handle(original_request):
             headers=original_request.headers,
             allow_redirects=False
         ) as response:
-            proxied_response = web.Response(
+            proxied_response = web.StreamResponse(
                 headers=response.headers, status=response.status
             )
             if response.headers.get("Transfer-Encoding", "").lower() == "chunked":
                 proxied_response.enable_chunked_encoding()
-
             await proxied_response.prepare(original_request)
-            try:
-                async for data in response.content.iter_any():
-                    await proxied_response.write(data)
-            except ConnectionResetError:
-                pass
-
-        return proxied_response
+            async for data in response.content.iter_any():
+                await proxied_response.write(data)
+            return proxied_response
 
 
 async def start_on_port(port):
@@ -63,7 +58,8 @@ def run():
         try:
             asyncio.run(start_on_port(80))
         except:
-            asyncio.run(start_on_port(8080))
+            pass
+        asyncio.run(start_on_port(8080))
 
 
 if __name__ == "__main__":
