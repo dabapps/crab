@@ -45,7 +45,7 @@ def proxy(path):
     return Response(
         response=downstream_response.content,
         status=downstream_response.status_code,
-        headers=downstream_response.headers.items(),
+        headers=downstream_response.raw.headers.items(),
     )
 
 
