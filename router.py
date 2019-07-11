@@ -1,7 +1,6 @@
 from urllib.parse import urlparse
 import os
 import psutil
-import asyncio
 from aiohttp import web, ClientSession
 
 
@@ -44,22 +43,10 @@ async def handle(original_request):
             return proxied_response
 
 
-async def start_on_port(port):
-    loop = asyncio.get_event_loop()
-    server = await loop.create_server(web.Server(handle), "0.0.0.0", port)
-    print(f"Router listening on port {port}.")
-    await server.serve_forever()
-
-
 def run():
-    if "CRAB_ROUTER_PORT" in os.environ:
-        asyncio.run(start_on_port(int(os.environ["CRAB_ROUTER_PORT"])))
-    else:
-        try:
-            asyncio.run(start_on_port(80))
-        except:
-            pass
-        asyncio.run(start_on_port(8080))
+    application = web.Application()
+    application.router.add_route("*", r"/{path:.*}", handle)
+    web.run_app(application, host="0.0.0.0", port=int(os.environ.get("CRAB_ROUTER_PORT", 80)))
 
 
 if __name__ == "__main__":
