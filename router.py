@@ -30,7 +30,7 @@ async def handle(original_request):
             target_url,
             data=original_request.content,
             headers=original_request.headers,
-            allow_redirects=False
+            allow_redirects=False,
         ) as response:
             proxied_response = web.StreamResponse(
                 headers=response.headers, status=response.status
@@ -46,7 +46,9 @@ async def handle(original_request):
 def run():
     application = web.Application()
     application.router.add_route("*", r"/{path:.*}", handle)
-    web.run_app(application, host="0.0.0.0", port=int(os.environ.get("CRAB_ROUTER_PORT", 80)))
+    web.run_app(
+        application, host="0.0.0.0", port=int(os.environ.get("CRAB_ROUTER_PORT", 80))
+    )
 
 
 if __name__ == "__main__":
