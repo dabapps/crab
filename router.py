@@ -41,9 +41,10 @@ def proxy(path):
         headers=request.headers,
         data=request.get_data(),
         allow_redirects=False,
+        stream=True,
     )
     return Response(
-        response=downstream_response.content,
+        response=downstream_response.raw.data,
         status=downstream_response.status_code,
         headers=downstream_response.raw.headers.items(),
     )
