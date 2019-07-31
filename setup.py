@@ -8,7 +8,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="crab",
-    version="0.1.0",
+    version="0.0.5",
     url="https://github.com/dabapps/crab",
     author="DabApps",
     description="A simple unix toolkit for working with local development environments. ",

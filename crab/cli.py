@@ -1,5 +1,5 @@
 import os
-from crab import router
+from crab import router, __version__
 import shlex
 import socket
 import sys
@@ -47,6 +47,10 @@ def main():
     # special case for the router
     if command[0] == "router":
         router.run()
+        return
+
+    elif command[0] == "--version":
+        print(f"crab v{__version__}")
         return
 
     # add stuff from the envfile(s)
