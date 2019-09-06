@@ -63,7 +63,7 @@ def main():
                 parsed_procfile = read_procfile(procfile_path)
                 if command[0] in parsed_procfile:
                     command = parsed_procfile[command[0]]
-                    break
+                break
 
     # add extra bin dir(s) to the PATH
     extra_bin_dirs = env.get("BIN_DIRS", "env/bin")
