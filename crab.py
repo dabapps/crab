@@ -57,11 +57,13 @@ def main():
 
     # procfile handling
     if len(command) == 1:
-        procfile_path = env.get("PROC_FILE", "Procfile")
-        if os.path.exists(procfile_path):
-            parsed_procfile = read_procfile(procfile_path)
-            if command[0] in parsed_procfile:
-                command = parsed_procfile[command[0]]
+        procfile_paths = env.get("PROC_FILE", "Procfile").split(",")
+        for procfile_path in procfile_paths:
+            if os.path.exists(procfile_path):
+                parsed_procfile = read_procfile(procfile_path)
+                if command[0] in parsed_procfile:
+                    command = parsed_procfile[command[0]]
+                break
 
     # add extra bin dir(s) to the PATH
     extra_bin_dirs = env.get("BIN_DIRS", "env/bin")

@@ -49,7 +49,7 @@ web: python manage.py runserver
 worker: python manage.py worker
 ```
 
-By default, Crab will look for a procfile called `Procfile` inside the project directory (ie wherever `crab` is executed from). This can be overridden using the `PROC_FILE` environment variable. For example `export PROC_FILE=configs/development/procfile`.
+By default, Crab will look for a procfile called `Procfile` inside the project directory (ie wherever `crab` is executed from). This can be overridden using the `PROC_FILE` environment variable. For example `export PROC_FILE=configs/development/procfile`. To specify multiple procfile locations, which are used in sequence, use `export PROC_FILE="configs/development/Procfile,configs/development/procfile"`
 
 To run a process defined in a procfile, use `crab <processname>`. For example, `crab web` would start the `web` process defined in the example procfile above. Note that Crab only runs a *single* process from the procfile. It cannot start all of the processes in the procfile at the same time. *This is by design*. If you wish to use multiple processes from the procfile, just start each one separately with `crab` in a separate terminal split or tab.
 
