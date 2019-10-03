@@ -11,7 +11,7 @@ setup(
     version="0.0.5",
     url="https://github.com/dabapps/crab",
     author="DabApps",
-    description="A simple unix toolkit for working with local development environments. ",
+    description="A simple unix toolkit for working with local development environments.",
     long_description=readme,
     long_description_content_type="text/markdown",
     license="BSD",
