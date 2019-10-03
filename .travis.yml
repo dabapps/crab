@@ -12,3 +12,4 @@ install:
 
 script:
   - black --check crab/ setup.py
+  - pip install -e .
