@@ -12,3 +12,4 @@ install:
 
 script:
   - black --check crab.py router.py
+  - ./scripts/freeze.sh
