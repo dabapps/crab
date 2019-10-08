@@ -29,7 +29,7 @@ def proxy(path):
     hostname = urlparse(request.base_url).hostname
     if hostname not in routes:
         app.logger.warn(f"No backend for {hostname}")
-        abort(404)
+        abort(502)
 
     path = request.full_path if request.args else request.path
     target_url = f"http://localhost:{routes[hostname]}{path}"
