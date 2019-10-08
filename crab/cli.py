@@ -44,13 +44,13 @@ def main():
     # start with the base environment
     env = dict(**os.environ)
 
-    # special case for the router
-    if command[0] == "router":
-        router.run()
+    if not command or command[0] == "--version":
+        print(f"crab v{__version__}")
         return
 
-    elif command[0] == "--version":
-        print(f"crab v{__version__}")
+    # special case for the router
+    elif command[0] == "router":
+        router.run()
         return
 
     # add stuff from the envfile(s)
