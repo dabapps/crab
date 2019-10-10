@@ -7,7 +7,7 @@ with open("requirements.txt") as f:
     requirements = f.read().split("\n")
 
 setup(
-    name="crab",
+    name="crab-toolkit",
     version=__import__("crab").__version__,
     url="https://github.com/dabapps/crab",
     author="DabApps",
