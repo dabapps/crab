@@ -1,3 +1,4 @@
-Flask==1.0.3
 psutil==5.6.3
-requests==2.22.0
+uvicorn==0.10.8
+starlette==0.13.0
+httpx==0.7.8

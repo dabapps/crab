@@ -1,9 +1,12 @@
-from flask import Flask, Response, request, abort
-from urllib.parse import urlparse
-from werkzeug.routing import Rule
 import os
+
+import httpx
 import psutil
-import requests
+import uvicorn
+from starlette.applications import Starlette
+from starlette.middleware.cors import ALL_METHODS
+from starlette.responses import Response, StreamingResponse
+from starlette.routing import Route
 
 
 def get_routes():
@@ -18,42 +21,42 @@ def get_routes():
     return routes
 
 
-app = Flask(__name__, static_folder=None)
-app.url_map.add(Rule("/", endpoint="proxy", defaults={"path": ""}))
-app.url_map.add(Rule("/<path:path>", endpoint="proxy"))
-
-
-@app.endpoint("proxy")
-def proxy(path):
+async def proxy(request):
     routes = get_routes()
-    hostname = urlparse(request.base_url).hostname
+    hostname = request.url.hostname
     if hostname not in routes:
-        app.logger.warn(f"No backend for {hostname}")
-        abort(502)
-
-    path = request.full_path if request.args else request.path
+        return Response(status_code=502)
+    path = request.url.path
     target_url = f"http://localhost:{routes[hostname]}{path}"
-    app.logger.info(f"Routing request to backend - {request.method} {hostname}{path}")
+    body = await request.body()
+    async with httpx.AsyncClient() as client:
+        upstream_response = await client.request(
+            method=request.method,
+            url=target_url,
+            data=body,
+            headers=request.headers.raw,
+            allow_redirects=False
+        )
+        if not upstream_response.is_stream_consumed:
+            return StreamingResponse(
+                content=upstream_response.stream(),
+                status_code=upstream_response.status_code,
+                headers=upstream_response.headers,
+            )
 
-    downstream_response = requests.request(
-        method=request.method,
-        url=target_url,
-        headers=request.headers,
-        data=request.get_data(),
-        allow_redirects=False,
-        stream=True,
-    )
-    return Response(
-        response=downstream_response.raw.data,
-        status=downstream_response.status_code,
-        headers=downstream_response.raw.headers.items(),
-    )
+        upstream_response_body = await upstream_response.read()
+        return Response(
+            content=upstream_response_body,
+            status_code=upstream_response.status_code,
+            headers=upstream_response.headers,
+        )
+
+
+app = Starlette(routes=[Route("/(.*)", endpoint=proxy, methods=ALL_METHODS)])
 
 
 def start_on_port(port):
-    app.run(
-        port=port, debug=True, use_debugger=False, use_reloader=False, load_dotenv=False
-    )
+    uvicorn.run(app, port=port, host="0.0.0.0")
 
 
 def run():
