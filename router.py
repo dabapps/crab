@@ -5,8 +5,10 @@ import psutil
 import uvicorn
 from starlette.applications import Starlette
 from starlette.middleware.cors import ALL_METHODS
-from starlette.responses import Response, StreamingResponse
+from starlette.responses import StreamingResponse, Response
 from starlette.routing import Route
+from uvicorn.config import LOGGING_CONFIG as UVICORN_LOGGING_CONFIG
+from uvicorn.logging import AccessFormatter
 
 
 def get_routes():
@@ -19,6 +21,17 @@ def get_routes():
         except:
             pass
     return routes
+
+
+class CustomAccessFormatter(AccessFormatter):
+    def get_client_addr(self, scope):
+        """
+        _Pretend_ the client address is actually the hostname.
+        Makes the log messages much nicer!
+        """
+        if 'headers' not in scope:
+            return super().get_client_addr(scope)
+        return httpx.Headers(scope['headers'])['Host']
 
 
 async def proxy(request):
@@ -35,18 +48,11 @@ async def proxy(request):
             url=target_url,
             data=body,
             headers=request.headers.raw,
-            allow_redirects=False
+            allow_redirects=False,
+            stream=True
         )
-        if not upstream_response.is_stream_consumed:
-            return StreamingResponse(
-                content=upstream_response.stream(),
-                status_code=upstream_response.status_code,
-                headers=upstream_response.headers,
-            )
-
-        upstream_response_body = await upstream_response.read()
-        return Response(
-            content=upstream_response_body,
+        return StreamingResponse(
+            content=upstream_response.raw(),
             status_code=upstream_response.status_code,
             headers=upstream_response.headers,
         )
@@ -56,6 +62,7 @@ app = Starlette(routes=[Route("/(.*)", endpoint=proxy, methods=ALL_METHODS)])
 
 
 def start_on_port(port):
+    UVICORN_LOGGING_CONFIG['formatters']['access']['()'] = CustomAccessFormatter
     uvicorn.run(app, port=port, host="0.0.0.0")
 
 
