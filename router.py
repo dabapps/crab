@@ -73,7 +73,7 @@ app = Starlette(routes=[Route("/(.*)", endpoint=proxy, methods=ALL_METHODS)])
 
 def start_on_port(port):
     UVICORN_LOGGING_CONFIG['formatters']['access']['()'] = CustomAccessFormatter
-    uvicorn.run(app, port=port, host="0.0.0.0")
+    uvicorn.run(app, port=port, host="0.0.0.0", headers=[('server', 'crab')])
 
 
 def run():
