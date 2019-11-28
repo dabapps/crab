@@ -41,7 +41,7 @@ async def proxy(request):
     routes = get_routes()
     hostname = request.url.hostname
     if hostname not in routes:
-        return Response(status_code=502)
+        return Response(status_code=502, content=f"No backend found for {hostname}.")
     path = request.url.path
     target_url = f"http://localhost:{routes[hostname]}{path}"
     body = await request.body()
