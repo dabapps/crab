@@ -11,7 +11,7 @@ from uvicorn.config import LOGGING_CONFIG as UVICORN_LOGGING_CONFIG
 from uvicorn.logging import AccessFormatter
 
 
-HEADERS_TO_STRIP = ['server', 'date']
+HEADERS_TO_STRIP = ["server", "date"]
 
 
 def get_routes():
@@ -32,9 +32,9 @@ class CustomAccessFormatter(AccessFormatter):
         _Pretend_ the client address is actually the hostname.
         Makes the log messages much nicer!
         """
-        if 'headers' not in scope:
+        if "headers" not in scope:
             return super().get_client_addr(scope)
-        return httpx.Headers(scope['headers'])['Host']
+        return httpx.Headers(scope["headers"])["Host"]
 
 
 async def proxy(request):
@@ -52,7 +52,7 @@ async def proxy(request):
             data=body,
             headers=request.headers.raw,
             allow_redirects=False,
-            stream=True
+            stream=True,
         )
 
         # Strip some headers which uvicorn forcefully adds
@@ -72,8 +72,8 @@ app = Starlette(routes=[Route("/(.*)", endpoint=proxy, methods=ALL_METHODS)])
 
 
 def start_on_port(port):
-    UVICORN_LOGGING_CONFIG['formatters']['access']['()'] = CustomAccessFormatter
-    uvicorn.run(app, port=port, host="0.0.0.0", headers=[('server', 'crab')])
+    UVICORN_LOGGING_CONFIG["formatters"]["access"]["()"] = CustomAccessFormatter
+    uvicorn.run(app, port=port, host="0.0.0.0", headers=[("server", "crab")])
 
 
 def run():
