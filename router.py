@@ -42,8 +42,9 @@ async def proxy(request):
     hostname = request.url.hostname
     if hostname not in routes:
         return Response(status_code=502, content=f"No backend found for {hostname}.")
-    path = request.url.path
-    target_url = f"http://localhost:{routes[hostname]}{path}"
+    target_url = f"http://localhost:{routes[hostname]}{request.url.path}"
+    if request.query_params:
+        target_url += f"?{request.query_params}"
     body = await request.body()
     async with httpx.AsyncClient() as client:
         upstream_response = await client.request(
