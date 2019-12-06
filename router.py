@@ -14,6 +14,9 @@ from uvicorn.logging import AccessFormatter
 HEADERS_TO_STRIP = ["server", "date"]
 
 
+client = httpx.AsyncClient()
+
+
 def get_routes():
     routes = {}
     for process in psutil.process_iter(attrs=["environ"]):
@@ -46,27 +49,26 @@ async def proxy(request):
     if request.query_params:
         target_url += f"?{request.query_params}"
     body = await request.body()
-    async with httpx.AsyncClient() as client:
-        upstream_response = await client.request(
-            method=request.method,
-            url=target_url,
-            data=body,
-            headers=request.headers.raw,
-            allow_redirects=False,
-            stream=True,
-        )
+    upstream_response = await client.request(
+        method=request.method,
+        url=target_url,
+        data=body,
+        headers=request.headers.raw,
+        allow_redirects=False,
+        stream=True,
+    )
 
-        # Strip some headers which uvicorn forcefully adds
-        upstream_headers = upstream_response.headers
-        for header_name in HEADERS_TO_STRIP:
-            if header_name in upstream_headers:
-                del upstream_headers[header_name]
+    # Strip some headers which uvicorn forcefully adds
+    upstream_headers = upstream_response.headers
+    for header_name in HEADERS_TO_STRIP:
+        if header_name in upstream_headers:
+            del upstream_headers[header_name]
 
-        return StreamingResponse(
-            content=upstream_response.raw(),
-            status_code=upstream_response.status_code,
-            headers=upstream_headers,
-        )
+    return StreamingResponse(
+        content=upstream_response.raw(),
+        status_code=upstream_response.status_code,
+        headers=upstream_headers,
+    )
 
 
 app = Starlette(routes=[Route("/(.*)", endpoint=proxy, methods=ALL_METHODS)])
