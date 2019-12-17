@@ -14,7 +14,7 @@ from uvicorn.logging import AccessFormatter
 HEADERS_TO_STRIP = ["server", "date"]
 
 
-client = httpx.AsyncClient()
+client = httpx.AsyncClient(timeout=None)
 
 
 def get_routes():
