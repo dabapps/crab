@@ -11,4 +11,5 @@ install:
   - pip install -r dev-requirements.txt
 
 script:
-  - black --check crab.py router.py
+  - black --check crab/ setup.py
+  - pip install -e .
