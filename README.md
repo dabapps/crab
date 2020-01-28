@@ -120,9 +120,8 @@ Binaries are built using [PyInstaller](https://www.pyinstaller.org/). The Python
 pyenv uninstall 3.7.3
 PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install
 pyenv exec python -m venv env
-env/bin/pip install -r requirements.txt
-env/bin/pip install pyinstaller
-env/bin/pyinstaller --paths=env/lib/python3.7/site-packages --onefile --clean crab/cli.py
+env/bin/pip install -r dev-requirements.txt
+./scripts/freeze.sh
 ```
 
 Your newly minted binary will be in `dist/crab`.
