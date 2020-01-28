@@ -13,4 +13,4 @@ install:
 script:
   - pip install -e .
   - black --check crab/ setup.py
-  - ./scripts/freeze.sh
+  - ./scripts/build_binary.sh

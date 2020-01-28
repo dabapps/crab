@@ -121,7 +121,7 @@ pyenv uninstall 3.7.3
 PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install
 pyenv exec python -m venv env
 env/bin/pip install -r dev-requirements.txt
-./scripts/freeze.sh
+./scripts/build_binary.sh
 ```
 
 Your newly minted binary will be in `dist/crab`.
