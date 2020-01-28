@@ -106,17 +106,11 @@ The port that the router binds to can be changed by setting the `CRAB_ROUTER_POR
 
 ## How to install Crab
 
-The easiest way is to just download the `crab` binary and put it somewhere on your `$PATH`. Alternatively: clone the repository, create a virtualenv, install the requirements in `requirements.txt`, and then create a file like this somewhere on your `$PATH` and `chmod +x` it:
-
-```
-#! /usr/bin/env sh
-
-/full/path/to/virtualenv/bin/python /full/path/to/crab/code/crab.py $@
-```
+The easiest way is to just download the `crab` binary and put it somewhere on your `$PATH`. Alternatively: clone the repository, create a virtualenv, install this package into it (`pip install -e .`), and then link it into somewhere on your `$PATH` (`sudo ln -s $PWD/env/bin/crab /usr/local/bin/crab`).
 
 ## Developing on Crab
 
-Please ensure all code conforms to Black formatting rules. Install `black` in your virtualenv and then `crab black *.py`.
+Please ensure all code conforms to Black formatting rules. Install `black` in your virtualenv and then `crab black crab/ setup.py`.
 
 ## Building a binary
 
@@ -128,7 +122,7 @@ PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install
 pyenv exec python -m venv env
 env/bin/pip install -r requirements.txt
 env/bin/pip install pyinstaller
-env/bin/pyinstaller --paths=env/lib/python3.7/site-packages --onefile --clean crab.py
+env/bin/pyinstaller --paths=env/lib/python3.7/site-packages --onefile --clean crab/cli.py
 ```
 
 Your newly minted binary will be in `dist/crab`.
