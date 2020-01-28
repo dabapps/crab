@@ -2,4 +2,4 @@
 
 set -e
 
-pyinstaller --clean -F ./crab.py -n crab
+pyinstaller --clean -F ./crab/cli.py -n crab
