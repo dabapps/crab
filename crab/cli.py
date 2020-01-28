@@ -3,6 +3,7 @@ from crab import router, __version__
 import shlex
 import socket
 import sys
+from dotenv import dotenv_values
 
 
 def get_free_port():
@@ -13,21 +14,6 @@ def get_free_port():
     port = s.getsockname()[1]
     s.close()
     return str(port)
-
-
-def read_envfile(path):
-    """Return a dictionary of environment variables specified in a
-    Heroku-style env file. Code borrowed from:
-    https://github.com/jacobian/django-dotenv/blob/master/dotenv.py"""
-    env = {}
-    for line in open(path):
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        k, v = line.split("=", 1)
-        v = v.strip("'").strip('"')
-        env[k] = v
-    return env
 
 
 def read_procfile(path):
@@ -57,7 +43,7 @@ def main():
     envfile_paths = env.get("ENV_FILE", ".env").split(",")
     for envfile_path in envfile_paths:
         if os.path.exists(envfile_path):
-            env.update(read_envfile(envfile_path))
+            env.update(dotenv_values(envfile_path))
 
     # procfile handling
     if len(command) == 1:
