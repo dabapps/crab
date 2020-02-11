@@ -108,19 +108,19 @@ The port that the router binds to can be changed by setting the `CRAB_ROUTER_POR
 
 ### Binary
 
-The easiest way is to just download the `crab` binary and put it somewhere on your `$PATH`. If the crab download went into your `~/Downloads` directory you can simply run the following to move it somewhere on your path.
+The easiest way is to just download the `crab` binary and put it somewhere on your `$PATH`. If the crab download went into your `~/Downloads` directory you can simply run the following to move it somewhere on your path:
 
 ```shell
 mv ~/Downloads/crab /usr/local/bin/
 ```
 
-In order to make this binary executable you may also need to run the following command to prevent permission errors.
+In order to make this binary executable you may also need to run the following command to prevent permission errors:
 
 ```shell
 chmod +x /usr/local/bin/crab
 ```
 
-In MacOSX Catalina you may need to also manually run the binary file before you can use it via the command line. Run the following command to open the location that we moved the binary to.
+In MacOSX Catalina you may need to also manually run the binary file before you can use it via the command line. Run the following command to open the location that we moved the binary to:
 
 ```
 open /usr/local/bin/
@@ -130,19 +130,19 @@ Double clicking on the crab binary and selecting "open" will open a new shell (t
 
 ### From source
 
-Alternatively, clone the repository, and create a virtual env with the following.
+Alternatively, clone the repository, and create a virtual env with the following:
 
 ```
 python3 -m venv env
 ```
 
-Using pip, install crab into the virtual env we just created.
+Using pip, install crab into the virtual env we just created:
 
 ```
 env/bin/pip install -e .
 ```
 
-Now you can link this to your path with the following.
+Now you can link this to your path with the following:
 
 ```
 sudo ln -s $PWD/env/bin/crab /usr/local/bin/crab
