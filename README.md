@@ -90,17 +90,15 @@ The ports functionality above is only useful in combination with another compone
 
 Now, if any of the other processes you run have an environment variable called `VIRTUAL_HOST`, the router can "see" them and automatically route traffic to the port they've been provided with.
 
-For example, say you have a Django project called MyWebsite. If you start the Django development server like this:
+You can set this environment variable in the `.env` file for your project e.g.
 
 ```
-VIRTUAL_HOST=mywebsite.localhost crab run python manage.py runserver 0.0.0.0:PORT
+VIRTUAL_HOST=mywebsite.localhost
 ```
 
-Then you can visit `http://mywebsite.localhost:8080` in your webserver, and the traffic will magically be routed to the right place.
+Then you can start (or restart) your project, visit `http://mywebsite.localhost:8080` in your webserver, and the traffic will magically be routed to the right place.
 
 (Note that at least Chrome automatically routes everything with the TLD `.localhost` to 127.0.0.1. Other browsers may or may not follow this standard).
-
-The `VIRTUAL_HOST` environment variable can also, of course, be put in your env file, so you don't need to specify it each time.
 
 The port that the router binds to can be changed by setting the `CRAB_ROUTER_PORT` env var. If this is not set, the router will first try to bind to port `80`, and then fall back to `8080` if it fails. This means that if you start the router with `sudo crab router`, you can then just use `http://mywebsite.localhost` in your browser - even better!
 
