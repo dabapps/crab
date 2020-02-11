@@ -106,7 +106,31 @@ The port that the router binds to can be changed by setting the `CRAB_ROUTER_POR
 
 ## How to install Crab
 
-The easiest way is to just download the `crab` binary and put it somewhere on your `$PATH`. Alternatively: clone the repository, create a virtualenv, install this package into it (`pip install -e .`), and then link it into somewhere on your `$PATH` (`sudo ln -s $PWD/env/bin/crab /usr/local/bin/crab`).
+### Binary
+
+The easiest way is to just download the `crab` binary and put it somewhere on your `$PATH`. If the crab download went into your `~/Downloads` directory you can simply run the following to move it somewhere on your path.
+
+```shell
+mv ~/Downloads/crab /usr/local/bin/
+```
+
+In order to make this binary executable you may also need to run the following command to prevent permission errors.
+
+```shell
+chmod +x /usr/local/bin/crab
+```
+
+In MacOSX Catalina you may need to also manually run the binary file before you can use it via the command line. Run the following command to open the location that we moved the binary to.
+
+```
+open /usr/local/bin/
+```
+
+Double clicking on the crab binary and selecting "open" will open a new shell (terminal window) which you can now close. Crab is ready to go!
+
+### From source
+
+Alternatively: clone the repository, create a virtualenv, install this package into it (`pip install -e .`), and then link it into somewhere on your `$PATH` (`sudo ln -s $PWD/env/bin/crab /usr/local/bin/crab`).
 
 ## Developing on Crab
 
