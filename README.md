@@ -130,7 +130,23 @@ Double clicking on the crab binary and selecting "open" will open a new shell (t
 
 ### From source
 
-Alternatively: clone the repository, create a virtualenv, install this package into it (`pip install -e .`), and then link it into somewhere on your `$PATH` (`sudo ln -s $PWD/env/bin/crab /usr/local/bin/crab`).
+Alternatively, clone the repository, and create a virtual env with the following.
+
+```
+python3 -m venv env
+```
+
+Using pip, install crab into the virtual env we just created.
+
+```
+env/bin/pip install -e .
+```
+
+Now you can link this to your path with the following.
+
+```
+sudo ln -s $PWD/env/bin/crab /usr/local/bin/crab
+```
 
 ## Developing on Crab
 
