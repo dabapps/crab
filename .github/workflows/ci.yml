@@ -24,3 +24,5 @@ jobs:
       run: which black && black --check crab/ setup.py || true
     - name: Try installing the package
       run: pip install -e .
+    - name: Try running crab
+      run: crab --version
