@@ -31,7 +31,7 @@ def main():
     env = dict(**os.environ)
 
     if not command or command[0] == "--version":
-        print(f"crab v{__version__}")
+        print("crab v" + __version__)
         return
 
     # special case for the router
@@ -57,7 +57,10 @@ def main():
 
     # add extra bin dir(s) to the PATH
     extra_bin_dirs = env.get("BIN_DIRS", "env/bin")
-    env["PATH"] = f"{os.getcwd()}:{extra_bin_dirs}:{env.get('PATH', '')}"
+    path = env.get('PATH', '').split(':')
+    path.insert(0, extra_bin_dirs)
+    path.insert(0, os.getcwd())
+    env["PATH"] = ":".join(path)
 
     # Provide a port to bind to if the process in a procfile app is called "web",
     # or if the command asks for one, or if explicitly specified.
