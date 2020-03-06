@@ -20,9 +20,7 @@ jobs:
         python-version: ${{ matrix.python }}
     - name: Install dependencies
       run: pip install -r dev-requirements.txt
-    - name: Run black
-      run: which black && black --check crab/ setup.py || true
-    - name: Try installing the package
-      run: pip install -e .
     - name: Try running crab
       run: crab --version
+    - name: Run tests
+      run: ./runtests

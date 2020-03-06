@@ -57,7 +57,7 @@ def main():
 
     # add extra bin dir(s) to the PATH
     extra_bin_dirs = env.get("BIN_DIRS", "env/bin")
-    path = env.get('PATH', '').split(':')
+    path = env.get("PATH", "").split(":")
     path.insert(0, extra_bin_dirs)
     path.insert(0, os.getcwd())
     env["PATH"] = ":".join(path)
