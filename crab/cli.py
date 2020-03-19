@@ -67,7 +67,7 @@ def main():
         or "CRAB_PROVIDE_PORT" in os.environ
     ):
         # provide a port in the environment and command line
-        port = get_free_port()
+        port = os.environ.get("CRAB_PROVIDE_PORT", get_free_port())
         env["PORT"] = port
         command = [item.replace("$PORT", port) for item in command]
 
