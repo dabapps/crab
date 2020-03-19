@@ -4,6 +4,8 @@ from werkzeug.routing import Rule
 import os
 import psutil
 import requests
+import argparse
+import sys
 
 
 def get_routes():
@@ -50,20 +52,37 @@ def proxy(path):
     )
 
 
-def start_on_port(port):
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--expose",
+        action="store_true",
+        help="Allow crab to be accessed outside the local machine",
+    )
+    return parser.parse_args(sys.argv[2:])
+
+
+def start_on_port(args, port):
     app.run(
-        port=port, debug=True, use_debugger=False, use_reloader=False, load_dotenv=False
+        port=port,
+        debug=True,
+        use_debugger=False,
+        use_reloader=False,
+        load_dotenv=False,
+        host="0.0.0.0" if args.expose else None,
     )
 
 
 def run():
+    args = get_args()
+
     if "CRAB_ROUTER_PORT" in os.environ:
         start_on_port(int(os.environ["CRAB_ROUTER_PORT"]))
     else:
         try:
-            start_on_port(80)
+            start_on_port(args, 80)
         except:
-            start_on_port(8080)
+            start_on_port(args, 8080)
 
 
 if __name__ == "__main__":
