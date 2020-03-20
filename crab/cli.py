@@ -57,10 +57,11 @@ def main():
 
     # add extra bin dir(s) to the PATH
     extra_bin_dirs = env.get("BIN_DIRS", "env/bin")
-    path = env.get("PATH", "").split(":")
-    path.insert(0, extra_bin_dirs)
-    path.insert(0, os.getcwd())
-    env["PATH"] = ":".join(path)
+    env["PATH"] = ":".join(part for part in [
+        env.get("PATH"),
+        extra_bin_dirs,
+        os.getcwd()
+    ] if part)
 
     # Provide a port to bind to if the process in a procfile app is called "web",
     # or if the command asks for one, or if explicitly specified.
