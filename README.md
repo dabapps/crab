@@ -104,65 +104,20 @@ The port that the router binds to can be changed by setting the `CRAB_ROUTER_POR
 
 ## How to install Crab
 
-### Binary
+Python doesn't have a great built-in way of installing command line tools. There are a few options.
 
-The easiest way is to just download the `crab` binary and put it somewhere on your `$PATH`. If the crab download went into your `~/Downloads` directory you can simply run the following to move it somewhere on your path:
+### Installing globally
 
-```shell
-mv ~/Downloads/crab /usr/local/bin/
-```
+You can try `pip install --user crabtools`. This will install `crab` and its dependencies globally. Depending on how you set up your development environment, this may not be desirable.
 
-In order to make this binary executable you may also need to run the following command to prevent permission errors:
+### Installing in a virtualenv
 
-```shell
-chmod +x /usr/local/bin/crab
-```
+You can create a virtualenv somewhere on your machine, `pip install crabtools` into it, and then put that virtualenv's `bin` dir on your `$PATH` (for example, by setting `$PATH` in your `.bashrc`) or link the binary onto somewhere that's already on your `$PATH` (eg `sudo ln -s /path/to/your/venv/bin/crab /usr/local/bin/crab`).
 
-In MacOSX Catalina you may need to also manually run the binary file before you can use it via the command line. Run the following command to open the location that we moved the binary to:
+### Using pipx
 
-```
-open /usr/local/bin/
-```
-
-Double clicking on the crab binary and selecting "open" will open a new shell (terminal window) which you can now close. Crab is ready to go!
-
-### From source
-
-Alternatively, clone the repository, and create a virtual env with the following:
-
-```
-python3 -m venv env
-```
-
-Using pip, install crab into the virtual env we just created:
-
-```
-env/bin/pip install -e .
-```
-
-Now you can link this to your path with the following:
-
-```
-sudo ln -s $PWD/env/bin/crab /usr/local/bin/crab
-```
+[`pipx`](https://pipxproject.github.io/pipx/) is a great tool for managing command line programs written in Python. It basically creates and manages virtualenvs containing isolated command line tools. Follow the instructions to install `pipx` and then `pipx install crabtools`.
 
 ## Developing on Crab
 
 Please ensure all code conforms to Black formatting rules. Install `black` in your virtualenv and then `crab black crab/ setup.py`.
-
-## Building a binary
-
-Binaries are built using [PyInstaller](https://www.pyinstaller.org/). The Python binary in your virtualenv must have been built with `PYTHON_CONFIGURE_OPTS="--enable-shared"` set for this to work. If you're using `pyenv`, do something like this:
-
-```
-pyenv uninstall 3.7.3
-PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install
-pyenv exec python -m venv env
-env/bin/pip install -r requirements.txt
-env/bin/pip install pyinstaller
-env/bin/pyinstaller --paths=env/lib/python3.7/site-packages --onefile --clean crab/cli.py
-```
-
-Your newly minted binary will be in `dist/crab`.
-
-Note that PyInstaller does not build cross-platform binaries, so if you want a binary that works on a Mac, you have to build the binary on a Mac.
