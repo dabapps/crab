@@ -2,5 +2,3 @@ black==19.3b0; python_version >= '3.6'
 pytest==5.3.5
 
 -e .
-
--r requirements.txt
