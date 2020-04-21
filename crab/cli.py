@@ -24,8 +24,9 @@ def read_procfile(path):
     return processes
 
 
-def main():
-    command = sys.argv[1:]
+def main(command=None):
+
+    command = command or sys.argv[1:]
 
     # start with the base environment
     env = dict(**os.environ)
@@ -58,7 +59,7 @@ def main():
     # add extra bin dir(s) to the PATH
     extra_bin_dirs = env.get("BIN_DIRS", "env/bin")
     env["PATH"] = ":".join(
-        part for part in [env.get("PATH"), extra_bin_dirs, os.getcwd()] if part
+        part for part in [extra_bin_dirs, os.getcwd(), env.get("PATH")] if part
     )
 
     # Provide a port to bind to if the process in a procfile app is called "web",
