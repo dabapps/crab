@@ -24,8 +24,9 @@ def read_procfile(path):
     return processes
 
 
-def main():
-    command = sys.argv[1:]
+def main(command=None):
+
+    command = command or sys.argv[1:]
 
     # start with the base environment
     env = dict(**os.environ)
