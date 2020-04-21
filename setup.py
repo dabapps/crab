@@ -14,10 +14,10 @@ setup(
     license="BSD",
     packages=["crab"],
     install_requires=[
-        "Flask==1.0.3",
-        "psutil==5.6.3",
-        "requests==2.22.0",
-        "python-dotenv==0.10.3",
+        "Flask",
+        "psutil",
+        "requests",
+        "python-dotenv",
     ],
     entry_points={"console_scripts": ["crab=crab.cli:main"]},
 )
