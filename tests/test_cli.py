@@ -28,13 +28,13 @@ class CLIExecutionTestCase(TestCase):
 
     def test_calls_correctly(self):
         main(["echo", "hello"])
-        self.execvpe.assert_called_once()
-        self.assertEqual(self.execvpe.call_args.args[0], "echo")
-        self.assertEqual(self.execvpe.call_args.args[1], ["echo", "hello"])
+        self.assertEqual(self.execvpe.call_count, 1)
+        self.assertEqual(self.execvpe.call_args[0][0], "echo")
+        self.assertEqual(self.execvpe.call_args[0][1], ["echo", "hello"])
 
     def test_has_updated_path(self):
         main(["env"])
-        self.execvpe.assert_called_once()
-        path = self.execvpe.call_args.args[2]["PATH"].split(":")
+        self.assertEqual(self.execvpe.call_count, 1)
+        path = self.execvpe.call_args[0][2]["PATH"].split(":")
         self.assertEqual(path[0], "env/bin")
         self.assertEqual(path[1], os.getcwd())
