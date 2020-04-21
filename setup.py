@@ -13,11 +13,6 @@ setup(
     long_description_content_type="text/markdown",
     license="BSD",
     packages=["crab"],
-    install_requires=[
-        "Flask",
-        "psutil",
-        "requests",
-        "python-dotenv",
-    ],
+    install_requires=["Flask", "psutil", "requests", "python-dotenv"],
     entry_points={"console_scripts": ["crab=crab.cli:main"]},
 )
