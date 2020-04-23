@@ -60,4 +60,4 @@ class CLIExecutionTestCase(TestCase):
 
     def test_port_not_provided_by_default(self):
         main(["somecommand"])
-        self.assertTrue("PORT" not in self.execvpe.call_args[0][2])
+        self.assertNotIn("PORT", self.execvpe.call_args[0][2])
