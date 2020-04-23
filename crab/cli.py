@@ -28,6 +28,9 @@ def main(command=None):
 
     command = command or sys.argv[1:]
 
+    # do we need to inject a free port into the environment?
+    should_provide_port = False
+
     # start with the base environment
     env = dict(**os.environ)
 
@@ -53,6 +56,7 @@ def main(command=None):
             if os.path.exists(procfile_path):
                 parsed_procfile = read_procfile(procfile_path)
                 if command[0] in parsed_procfile:
+                    should_provide_port = command[0] == "web"
                     command = parsed_procfile[command[0]]
                 break
 
@@ -65,7 +69,7 @@ def main(command=None):
     # Provide a port to bind to if the process in a procfile app is called "web",
     # or if the command asks for one, or if explicitly specified.
     if (
-        command[0] == "web"
+        should_provide_port
         or "$PORT" in " ".join(command)
         or "CRAB_PROVIDE_PORT" in os.environ
     ):
