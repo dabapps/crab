@@ -24,14 +24,15 @@ def read_procfile(path):
     return processes
 
 
-def main():
-    command = sys.argv[1:]
+def main(command=None):
+
+    command = command or sys.argv[1:]
 
     # start with the base environment
     env = dict(**os.environ)
 
     if not command or command[0] == "--version":
-        print(f"crab v{__version__}")
+        print("crab v" + __version__)
         return
 
     # special case for the router
@@ -57,7 +58,9 @@ def main():
 
     # add extra bin dir(s) to the PATH
     extra_bin_dirs = env.get("BIN_DIRS", "env/bin")
-    env["PATH"] = f"{os.getcwd()}:{extra_bin_dirs}:{env.get('PATH', '')}"
+    env["PATH"] = ":".join(
+        part for part in [extra_bin_dirs, os.getcwd(), env.get("PATH")] if part
+    )
 
     # Provide a port to bind to if the process in a procfile app is called "web",
     # or if the command asks for one, or if explicitly specified.
@@ -67,8 +70,7 @@ def main():
         or "CRAB_PROVIDE_PORT" in os.environ
     ):
         # provide a port in the environment and command line
-        port = get_free_port()
-        env["PORT"] = port
+        port = env.setdefault("PORT", get_free_port())
         command = [item.replace("$PORT", port) for item in command]
 
     # off we go

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+unset BIN_DIRS
+
+pytest -s tests/
+
+if hash black 2>/dev/null;
+then
+  black --check crab/ tests/ setup.py
+fi

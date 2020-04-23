@@ -3,11 +3,8 @@ from setuptools import setup
 with open("README.md") as f:
     readme = f.read()
 
-with open("requirements.txt") as f:
-    requirements = f.read().split("\n")
-
 setup(
-    name="crab-toolkit",
+    name="crabtools",
     version=__import__("crab").__version__,
     url="https://github.com/dabapps/crab",
     author="DabApps",
@@ -16,6 +13,6 @@ setup(
     long_description_content_type="text/markdown",
     license="BSD",
     packages=["crab"],
-    install_requires=requirements,
+    install_requires=["Flask", "psutil", "requests", "python-dotenv"],
     entry_points={"console_scripts": ["crab=crab.cli:main"]},
 )
