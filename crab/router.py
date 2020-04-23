@@ -4,6 +4,7 @@ from werkzeug.routing import Rule
 import os
 import psutil
 import requests
+import sys
 
 
 def get_routes():
@@ -54,7 +55,12 @@ def proxy(path):
 
 def start_on_port(port):
     app.run(
-        port=port, debug=True, use_debugger=False, use_reloader=False, load_dotenv=False
+        port=port,
+        debug=True,
+        use_debugger=False,
+        use_reloader=False,
+        load_dotenv=False,
+        host=os.environ.get("CRAB_ROUTER_HOST"),
     )
 
 

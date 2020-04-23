@@ -2,6 +2,8 @@
 
 `crab` is a simple unix toolkit for working with local development environments.
 
+It is intended to allow developers to run multiple [twelve-factor](https://12factor.net/) style web applications locally and address them via hostnames rather than port numbers. It is deliberately designed to be as simple as possible, and therefore does not attempt to manage multiple processes itself.
+
 ## What does it do?
 
 Crab does the following:
@@ -101,6 +103,8 @@ Then you can start (or restart) your project, visit `http://mywebsite.localhost:
 (Note that at least Chrome automatically routes everything with the TLD `.localhost` to 127.0.0.1. Other browsers may or may not follow this standard).
 
 The port that the router binds to can be changed by setting the `CRAB_ROUTER_PORT` env var. If this is not set, the router will first try to bind to port `80`, and then fall back to `8080` if it fails. This means that if you start the router with `sudo crab router`, you can then just use `http://mywebsite.localhost` in your browser - even better!
+
+The router is designed for local development only, so binds to `127.0.0.1` by default. You can set `CRAB_ROUTER_HOST` to customize this.
 
 ## How to install Crab
 
