@@ -108,7 +108,17 @@ The router is designed for local development only, so binds to `127.0.0.1` by de
 
 ## How to install Crab
 
-Python doesn't have a great built-in way of installing command line tools. There are a few options.
+Python doesn't have a great built-in way of installing command line tools. There are a few options:
+
+### Using homebrew
+
+Crab can be downloaded from [our homebrew tap](https://github.com/dabapps/homebrew-tap):
+
+```
+brew install dabapps/tap/crab
+```
+
+This will also add the router as a service, which can be started with `brew services start crab`.
 
 ### Installing globally
 
