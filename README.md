@@ -104,7 +104,17 @@ The port that the router binds to can be changed by setting the `CRAB_ROUTER_POR
 
 ## How to install Crab
 
-Python doesn't have a great built-in way of installing command line tools. There are a few options.
+Python doesn't have a great built-in way of installing command line tools. There are a few options:
+
+### Using homebrew
+
+Crab can be downloaded from [our homebrew tap](https://github.com/dabapps/homebrew-tap):
+
+```
+brew install dabapps/tap/crab
+```
+
+This will also add the router as a service, which can be started with `brew services start crab`.
 
 ### Installing globally
 
