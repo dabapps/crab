@@ -102,6 +102,8 @@ Then you can start (or restart) your project, visit `http://mywebsite.localhost:
 
 The port that the router binds to can be changed by setting the `CRAB_ROUTER_PORT` env var. If this is not set, the router will first try to bind to port `80`, and then fall back to `8080` if it fails. This means that if you start the router with `sudo crab router`, you can then just use `http://mywebsite.localhost` in your browser - even better!
 
+The router is designed for local development only, so binds to `127.0.0.1` by default. You can set `CRAB_ROUTER_HOST` to customize this.
+
 ## How to install Crab
 
 Python doesn't have a great built-in way of installing command line tools. There are a few options.
