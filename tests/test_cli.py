@@ -38,3 +38,26 @@ class CLIExecutionTestCase(TestCase):
         path = self.execvpe.call_args[0][2]["PATH"].split(":")
         self.assertEqual(path[0], "env/bin")
         self.assertEqual(path[1], os.getcwd())
+
+    def test_port_provided_for_web_command_in_procfile(self):
+        os.environ["PROC_FILE"] = "tests/Procfile"
+        main(["web"])
+        provided_port = self.execvpe.call_args[0][2].get("PORT")
+        self.assertTrue(provided_port and provided_port.isdigit())
+        del os.environ["PROC_FILE"]
+
+    def test_port_provided_for_command_containing_port(self):
+        main(["somecommand", "$PORT"])
+        provided_port = self.execvpe.call_args[0][2].get("PORT")
+        self.assertTrue(provided_port and provided_port.isdigit())
+
+    def test_port_provided_if_explicitly_requested(self):
+        os.environ["CRAB_PROVIDE_PORT"] = "true"
+        main(["somecommand"])
+        provided_port = self.execvpe.call_args[0][2].get("PORT")
+        self.assertTrue(provided_port and provided_port.isdigit())
+        del os.environ["CRAB_PROVIDE_PORT"]
+
+    def test_port_not_provided_by_default(self):
+        main(["somecommand"])
+        self.assertNotIn("PORT", self.execvpe.call_args[0][2])
