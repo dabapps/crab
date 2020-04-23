@@ -2,6 +2,8 @@
 
 `crab` is a simple unix toolkit for working with local development environments.
 
+It is intended to allow developers to run multiple [twelve-factor](https://12factor.net/) style web applications locally and address them via hostnames rather than port numbers. It is deliberately designed to be as simple as possible, and therefore does not attempt to manage multiple processes itself.
+
 ## What does it do?
 
 Crab does the following:
