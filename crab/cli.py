@@ -28,20 +28,20 @@ def main(command=None):
 
     command = command or sys.argv[1:]
 
-    # do we need to inject a free port into the environment?
-    should_provide_port = False
-
-    # start with the base environment
-    env = dict(**os.environ)
-
     if not command or command[0] == "--version":
         print("crab v" + __version__)
         return
 
     # special case for the router
-    elif command[0] == "router":
+    if command[0] == "router":
         router.run()
         return
+
+    # do we need to inject a free port into the environment?
+    should_provide_port = False
+
+    # start with the base environment
+    env = dict(**os.environ)
 
     # add stuff from the envfile(s)
     envfile_paths = env.get("ENV_FILE", ".env").split(",")
