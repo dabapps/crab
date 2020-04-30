@@ -17,6 +17,16 @@ class CLITestCase(TestCase):
         self.assertIn(__version__, cmd.stdout.decode())
         self.assertIn("crab", cmd.stdout.decode())
 
+    def test_missing_command(self):
+        cmd = subprocess.run(
+            ["crab", "this-command-shouldnt-exist"], stdout=subprocess.PIPE
+        )
+        self.assertEqual(cmd.returncode, 1)
+        self.assertIn(
+            'Could not find "this-command-shouldnt-exist" in your procfile or $PATH.',
+            cmd.stdout.decode(),
+        )
+
 
 class CLIExecutionTestCase(TestCase):
     def setUp(self):
@@ -47,17 +57,17 @@ class CLIExecutionTestCase(TestCase):
         del os.environ["PROC_FILE"]
 
     def test_port_provided_for_command_containing_port(self):
-        main(["somecommand", "$PORT"])
+        main(["echo", "$PORT"])
         provided_port = self.execvpe.call_args[0][2].get("PORT")
         self.assertTrue(provided_port and provided_port.isdigit())
 
     def test_port_provided_if_explicitly_requested(self):
         os.environ["CRAB_PROVIDE_PORT"] = "true"
-        main(["somecommand"])
+        main(["echo"])
         provided_port = self.execvpe.call_args[0][2].get("PORT")
         self.assertTrue(provided_port and provided_port.isdigit())
         del os.environ["CRAB_PROVIDE_PORT"]
 
     def test_port_not_provided_by_default(self):
-        main(["somecommand"])
+        main(["echo"])
         self.assertNotIn("PORT", self.execvpe.call_args[0][2])

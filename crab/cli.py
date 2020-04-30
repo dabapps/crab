@@ -4,6 +4,7 @@ import shlex
 import socket
 import sys
 from dotenv import dotenv_values
+import shutil
 
 
 def get_free_port():
@@ -76,6 +77,10 @@ def main(command=None):
         # provide a port in the environment and command line
         port = env.setdefault("PORT", get_free_port())
         command = [item.replace("$PORT", port) for item in command]
+
+    if shutil.which(command[0], path=env["PATH"]) is None:
+        print('Could not find "{}" in your procfile or $PATH.'.format(command[0]))
+        exit(1)
 
     # off we go
     os.execvpe(command[0], command, env)
