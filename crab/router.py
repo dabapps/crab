@@ -10,11 +10,9 @@ import sys
 def get_route_for_hostname(hostname):
     for process in psutil.process_iter(attrs=["environ"]):
         process_env = process.info["environ"]
-        if (
-            process_env
-            and process_env.get("VIRTUAL_HOST") == hostname
-            and "PORT" in process_env
-        ):
+        if not process_env or "PORT" not in process_env:
+            continue
+        if hostname in process_env.get("VIRTUAL_HOST", "").split(","):
             return process_env["PORT"]
 
 

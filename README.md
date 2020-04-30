@@ -98,6 +98,12 @@ You can set this environment variable in the `.env` file for your project e.g.
 VIRTUAL_HOST=mywebsite.localhost
 ```
 
+You can also specify multiple hostnames:
+
+```
+VIRTUAL_HOST=mywebsite.localhost,myotherwebsite.localhost
+```
+
 Then you can start (or restart) your project, visit `http://mywebsite.localhost:8080` in your browser, and the traffic will magically be routed to the right place.
 
 (Note that at least Chrome automatically routes everything with the TLD `.localhost` to 127.0.0.1. Other browsers may or may not follow this standard).
