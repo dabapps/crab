@@ -4,6 +4,7 @@ from werkzeug.routing import Rule
 import os
 import psutil
 import requests
+import sys
 
 
 def get_route_for_hostname(hostname):
@@ -26,13 +27,15 @@ app.url_map.add(Rule("/<path:path>", endpoint="proxy"))
 def proxy(path):
     hostname = urlparse(request.base_url).hostname
     upstream_port = get_route_for_hostname(hostname)
-    if not upstream_port:
-        app.logger.warn(f"No backend for {hostname}")
+    if upstream_port is None:
+        app.logger.warn("No backend for %s", hostname)
         abort(502)
 
     path = request.full_path if request.args else request.path
-    target_url = f"http://localhost:{upstream_port}{path}"
-    app.logger.info(f"Routing request to backend - {request.method} {hostname}{path}")
+    target_url = "http://localhost:" + upstream_port + path
+    app.logger.info(
+        "Routing request to backend - %s %s%s", request.method, hostname, path
+    )
 
     downstream_response = requests.request(
         method=request.method,
@@ -51,7 +54,12 @@ def proxy(path):
 
 def start_on_port(port):
     app.run(
-        port=port, debug=True, use_debugger=False, use_reloader=False, load_dotenv=False
+        port=port,
+        debug=True,
+        use_debugger=False,
+        use_reloader=False,
+        load_dotenv=False,
+        host=os.environ.get("CRAB_ROUTER_HOST"),
     )
 
 

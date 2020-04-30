@@ -2,6 +2,8 @@
 
 `crab` is a simple unix toolkit for working with local development environments.
 
+It is intended to allow developers to run multiple [twelve-factor](https://12factor.net/) style web applications locally and address them via hostnames rather than port numbers. It is deliberately designed to be as simple as possible, and therefore does not attempt to manage multiple processes itself.
+
 ## What does it do?
 
 Crab does the following:
@@ -90,41 +92,46 @@ The ports functionality above is only useful in combination with another compone
 
 Now, if any of the other processes you run have an environment variable called `VIRTUAL_HOST`, the router can "see" them and automatically route traffic to the port they've been provided with.
 
-For example, say you have a Django project called MyWebsite. If you start the Django development server like this:
+You can set this environment variable in the `.env` file for your project e.g.
 
 ```
-VIRTUAL_HOST=mywebsite.localhost crab run python manage.py runserver 0.0.0.0:PORT
+VIRTUAL_HOST=mywebsite.localhost
 ```
 
-Then you can visit `http://mywebsite.localhost:8080` in your webserver, and the traffic will magically be routed to the right place.
+Then you can start (or restart) your project, visit `http://mywebsite.localhost:8080` in your browser, and the traffic will magically be routed to the right place.
 
 (Note that at least Chrome automatically routes everything with the TLD `.localhost` to 127.0.0.1. Other browsers may or may not follow this standard).
 
-The `VIRTUAL_HOST` environment variable can also, of course, be put in your env file, so you don't need to specify it each time.
-
 The port that the router binds to can be changed by setting the `CRAB_ROUTER_PORT` env var. If this is not set, the router will first try to bind to port `80`, and then fall back to `8080` if it fails. This means that if you start the router with `sudo crab router`, you can then just use `http://mywebsite.localhost` in your browser - even better!
+
+The router is designed for local development only, so binds to `127.0.0.1` by default. You can set `CRAB_ROUTER_HOST` to customize this.
 
 ## How to install Crab
 
-The easiest way is to just download the `crab` binary and put it somewhere on your `$PATH`. Alternatively: clone the repository, create a virtualenv, install this package into it (`pip install -e .`), and then link it into somewhere on your `$PATH` (`sudo ln -s $PWD/env/bin/crab /usr/local/bin/crab`).
+Python doesn't have a great built-in way of installing command line tools. There are a few options:
+
+### Using homebrew
+
+Crab can be downloaded from [our homebrew tap](https://github.com/dabapps/homebrew-tap):
+
+```
+brew install dabapps/tap/crab
+```
+
+This will also add the router as a service, which can be started with `brew services start crab`.
+
+### Installing globally
+
+You can try `pip install --user crabtools`. This will install `crab` and its dependencies globally. Depending on how you set up your development environment, this may not be desirable.
+
+### Installing in a virtualenv
+
+You can create a virtualenv somewhere on your machine, `pip install crabtools` into it, and then put that virtualenv's `bin` dir on your `$PATH` (for example, by setting `$PATH` in your `.bashrc`) or link the binary onto somewhere that's already on your `$PATH` (eg `sudo ln -s /path/to/your/venv/bin/crab /usr/local/bin/crab`).
+
+### Using pipx
+
+[`pipx`](https://pipxproject.github.io/pipx/) is a great tool for managing command line programs written in Python. It basically creates and manages virtualenvs containing isolated command line tools. Follow the instructions to install `pipx` and then `pipx install crabtools`.
 
 ## Developing on Crab
 
 Please ensure all code conforms to Black formatting rules. Install `black` in your virtualenv and then `crab black crab/ setup.py`.
-
-## Building a binary
-
-Binaries are built using [PyInstaller](https://www.pyinstaller.org/). The Python binary in your virtualenv must have been built with `PYTHON_CONFIGURE_OPTS="--enable-shared"` set for this to work. If you're using `pyenv`, do something like this:
-
-```
-pyenv uninstall 3.7.3
-PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install
-pyenv exec python -m venv env
-env/bin/pip install -r requirements.txt
-env/bin/pip install pyinstaller
-env/bin/pyinstaller --paths=env/lib/python3.7/site-packages --onefile --clean crab/cli.py
-```
-
-Your newly minted binary will be in `dist/crab`.
-
-Note that PyInstaller does not build cross-platform binaries, so if you want a binary that works on a Mac, you have to build the binary on a Mac.
