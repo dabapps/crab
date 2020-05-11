@@ -46,6 +46,11 @@ def proxy(path):
         allow_redirects=False,
         stream=True,
     )
+
+    # We need to remove the transfer-encoding header as this will
+    # no longer apply to the response we are about to send
+    downstream_response.raw.headers.pop("transfer-encoding", None)
+
     return Response(
         response=downstream_response.raw.data,
         status=downstream_response.status_code,
