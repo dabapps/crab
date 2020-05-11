@@ -7,16 +7,13 @@ import requests
 import sys
 
 
-def get_routes():
-    routes = {}
+def get_route_for_hostname(hostname):
     for process in psutil.process_iter(attrs=["environ"]):
-        try:
-            host = process.info["environ"]["VIRTUAL_HOST"]
-            port = process.info["environ"]["PORT"]
-            routes[host] = port
-        except:
-            pass
-    return routes
+        process_env = process.info["environ"]
+        if not process_env or "PORT" not in process_env:
+            continue
+        if hostname in process_env.get("VIRTUAL_HOST", "").split(","):
+            return process_env["PORT"]
 
 
 app = Flask(__name__, static_folder=None)
@@ -26,14 +23,14 @@ app.url_map.add(Rule("/<path:path>", endpoint="proxy"))
 
 @app.endpoint("proxy")
 def proxy(path):
-    routes = get_routes()
     hostname = urlparse(request.base_url).hostname
-    if hostname not in routes:
+    upstream_port = get_route_for_hostname(hostname)
+    if upstream_port is None:
         app.logger.warn("No backend for %s", hostname)
         abort(502)
 
     path = request.full_path if request.args else request.path
-    target_url = "http://localhost:" + routes[hostname] + path
+    target_url = "http://localhost:" + upstream_port + path
     app.logger.info(
         "Routing request to backend - %s %s%s", request.method, hostname, path
     )
