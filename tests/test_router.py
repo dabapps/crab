@@ -11,5 +11,5 @@ class RouterTestCase(TestCase):
             env={**os.environ, "VIRTUAL_HOST": "test.localhost", "PORT": "1234"},
         ) as subproc:
             routes = get_routes()
-            self.assertEqual(routes, {"test.localhost": "1234"})
+            self.assertEqual(routes["test.localhost"], "1234")
             subproc.terminate()
