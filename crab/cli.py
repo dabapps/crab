@@ -2,6 +2,7 @@ import os
 from crab import router, __version__
 import shlex
 import socket
+import subprocess
 import sys
 from dotenv import dotenv_values
 import shutil
@@ -78,12 +79,20 @@ def main(command=None):
         port = env.setdefault("PORT", get_free_port())
         command = [item.replace("$PORT", port) for item in command]
 
-    if shutil.which(command[0], path=env["PATH"]) is None:
-        print('Could not find "{}" in your procfile or $PATH.'.format(command[0]))
-        exit(1)
+    if shutil.which(command[0], path=env["PATH"]) is not None:
+        os.execvpe(command[0], command, env)
 
-    # off we go
-    os.execvpe(command[0], command, env)
+    # Is it a shell function?
+    if (
+        subprocess.run(
+            ["declare", "-f", command[0]], shell=True, stdout=subprocess.DEVNULL
+        ).returncode
+        == 0
+    ):
+        os.execvpe(env["SHELL"], [env["SHELL"], "-ci"] + command, env)
+
+    print('Could not find "{}" in your procfile or $PATH.'.format(command[0]))
+    exit(1)
 
 
 if __name__ == "__main__":
