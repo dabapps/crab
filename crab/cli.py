@@ -80,7 +80,7 @@ def main(command=None):
         command = [item.replace("$PORT", port) for item in command]
 
     if shutil.which(command[0], path=env["PATH"]) is not None:
-        os.execvpe(command[0], command, env)
+        return os.execvpe(command[0], command, env)
 
     # Is it a shell function?
     if (
@@ -89,7 +89,7 @@ def main(command=None):
         ).returncode
         == 0
     ):
-        os.execvpe(env["SHELL"], [env["SHELL"], "-ci"] + command, env)
+        return os.execvpe(env["SHELL"], [env["SHELL"], "-ci"] + command, env)
 
     print('Could not find "{}" in your procfile or $PATH.'.format(command[0]))
     exit(1)
