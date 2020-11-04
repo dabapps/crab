@@ -21,7 +21,7 @@ class CLITestCase(TestCase):
         cmd = subprocess.run(
             ["crab", "this-command-shouldnt-exist"], stdout=subprocess.PIPE
         )
-        self.assertEqual(cmd.returncode, 1)
+        self.assertNotEqual(cmd.returncode, 0)
         self.assertIn(
             'Could not find "this-command-shouldnt-exist" in your procfile or $PATH.',
             cmd.stdout.decode(),
