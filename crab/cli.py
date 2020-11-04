@@ -79,9 +79,6 @@ def main(command=None):
         port = env.setdefault("PORT", get_free_port())
         command = [item.replace("$PORT", port) for item in command]
 
-    if shutil.which(command[0], path=env["PATH"]) is not None:
-        return os.execvpe(command[0], command, env)
-
     # Is it a shell function?
     if (
         subprocess.run(
@@ -90,6 +87,9 @@ def main(command=None):
         == 0
     ):
         return os.execvpe(env["SHELL"], [env["SHELL"], "-ci"] + command, env)
+
+    if shutil.which(command[0], path=env["PATH"]) is not None:
+        return os.execvpe(command[0], command, env)
 
     print('Could not find "{}" in your procfile or $PATH.'.format(command[0]))
     exit(1)
